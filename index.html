@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESTAI</title>
+<meta name="description" content="Est Ai — your AI workspace for chatting, writing, search and files.">
+<meta name="theme-color" content="#070b14">
+<!-- Google AdSense site verification / ad loader. Approval is still controlled by Google. -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7204422171180943" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="intro" class="intro">
+  <video id="introVideo" class="intro-video" autoplay muted playsinline>
+    <source src="assets/entry-animation.mp4" type="video/mp4">
+  </video>
+  <div id="fallbackLogo" class="fallback-logo">
+    <img src="assets/est-ai-logo.png" alt="Est Ai logo">
+    <div>Est Ai</div>
+  </div>
+</div>
+
+<div id="auth" class="auth hidden">
+  <div class="auth-card">
+    <img class="auth-logo" src="assets/est-ai-logo.png" alt="Est Ai">
+    <h1>Welcome to Est Ai</h1>
+    <p>Sign in or create your account to continue.</p>
+    <button class="auth-btn google" onclick="loginGoogle()"><svg class="google-mark" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15z"/><path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44z"/><path fill="#FBBC05" d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.3H5.8a20 20 0 0 0 0 17.8z"/><path fill="#EA4335" d="M24 12c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 6.1 29.5 4 24 4A20 20 0 0 0 5.8 15.1l6.8 5.3C14.2 15.6 18.7 12 24 12z"/></svg><span>Continue with Google</span></button>
+    <button class="auth-btn" onclick="showEmail()">Sign up with Email & Password</button>
+    <div id="emailBox" class="email-box hidden">
+      <input id="authEmail" placeholder="Email address" type="email" autocomplete="email">
+      <input id="authPassword" placeholder="Password (6+ characters)" type="password" autocomplete="new-password">
+      <button class="auth-btn primary" onclick="loginEmail()">Sign in / Create account</button>
+    </div>
+    <small id="authStatus">Secure sign-in uses your Firebase Web App configuration.</small><small class="backend-note">Backend: <span id="authBackendStatus">checking…</span></small>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside id="drawer" class="drawer">
+    <div class="drawer-head">
+      <div class="brand"><img src="assets/est-ai-logo.png"><div><b>Est Ai</b><small>by SOUROVIK</small></div></div>
+      <button class="icon-btn" onclick="closeDrawer()">×</button>
+    </div>
+    <button class="menu-action" onclick="toast('Search opened')">⌕ <span>Search</span></button>
+    <nav>
+      <button onclick="newChat()">＋ <span>New chat</span></button>
+      <button onclick="showPage('images')">▧ <span>Images</span></button>
+      <button onclick="showPage('library')">▤ <span>Library</span></button>
+      <button onclick="showPage('projects')">▦ <span>Projects</span></button>
+      <button onclick="showPage('scheduled')">◷ <span>Scheduled</span></button>
+      <button onclick="showPage('agents')">✧ <span>AI Agents</span></button>
+      <button onclick="showPage('plugins')">◇ <span>Tools & Plugins</span></button>
+    </nav>
+    <div class="section-title">Pinned</div>
+    <div id="pinned"></div>
+    <div class="section-row"><span class="section-title">Conversations</span><button class="tiny" onclick="showAll()">See all</button></div>
+    <div id="conversationList"></div>
+    <div class="drawer-bottom">
+      <button onclick="showPage('settings')">⚙ <span>Settings</span></button>
+      <button onclick="showPage('profile')">◉ <span>Profile</span></button>
+      <button class="plus-btn" onclick="showPage('plus')">✦ Get Plus</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn" onclick="openDrawer()">☰</button>
+      <div class="top-brand">Est Ai</div>
+      <span id="backendStatus" class="connection-status">Connecting…</span>
+      <button class="getplus" onclick="showPage('plus')">✦ Get Plus</button>
+    </header>
+
+    <section id="page-chat" class="page active">
+      <div class="welcome">
+        <img src="assets/est-ai-logo.png" class="chat-logo">
+        <h2>How can I help?</h2>
+        <p>Ask Est Ai anything.</p>
+      </div>
+      <div id="messages" class="messages">
+        <div class="ai-message">Hi! I'm Est Ai. What would you like to do today?</div>
+      </div>
+      <div class="quick-actions">
+        <button onclick="startImageCreation()">▧ Create an image</button>
+        <button onclick="startWriteEdit()">✎ Write or edit</button>
+        <button onclick="startWebSearch()">⌕ Search the web</button>
+      </div>
+      <div class="composer">
+        <button class="round" title="Attach a file" onclick="toast('File uploads need a backend upload endpoint; not enabled yet.')">＋</button>
+        <textarea id="prompt" rows="1" placeholder="Message Est Ai..."></textarea>
+        <button class="round" title="Voice input" aria-label="Voice input" onclick="startVoiceInput()">🎙</button>
+        <button class="round" title="Send message" aria-label="Send message" onclick="sendMessage()">➤</button>
+      </div>
+    </section>
+
+    <section id="page-images" class="page"><div class="panel"><h2>Images</h2><p>Create, view and manage your generated images.</p><button class="primary" onclick="toast('Image generation is not available in backend v1.1 yet')">Image generation unavailable</button><p class="muted">Image generation and editing are disabled by the current backend.</p></div></section>
+    <section id="page-library" class="page"><div class="panel"><h2>Library</h2><p>Your uploaded and generated files stay here.</p><div class="library-grid"><div>＋ Upload<br><small>Upload UI not connected</small></div><div>▧ Images<br><small>No generated images yet</small></div><div>▤ Documents<br><small>File library API not connected</small></div><div>↓ Downloads<br><small>Available files only</small></div></div></div></section>
+    <section id="page-projects" class="page"><div class="panel"><h2>Projects</h2><p>Organize related chats, files and work.</p></div></section>
+    <section id="page-scheduled" class="page"><div class="panel"><h2>Scheduled</h2><p>Your scheduled tasks and reminders will appear here.</p></div></section>
+    <section id="page-agents" class="page">
+      <div class="panel"><h2>AI Agents</h2><p>Choose a focused assistant. It prepares a prompt for the existing EST AI backend; its abilities still depend on the connected model.</p>
+        <div class="tool-grid">
+          <button class="tool-card" onclick="useAgent('study')"><span>📚</span><b>Study Coach</b><small>Explain topics step by step and quiz me.</small></button>
+          <button class="tool-card" onclick="useAgent('coding')"><span>💻</span><b>Coding Helper</b><small>Debug, explain and improve code.</small></button>
+          <button class="tool-card" onclick="useAgent('writer')"><span>✍️</span><b>Writing Assistant</b><small>Draft, rewrite and polish text.</small></button>
+          <button class="tool-card" onclick="useAgent('research')"><span>🔎</span><b>Research Guide</b><small>Structure research and flag facts to verify.</small></button>
+          <button class="tool-card" onclick="useAgent('document')"><span>📄</span><b>Document Helper</b><small>Summarize text you paste into chat.</small></button>
+          <button class="tool-card" onclick="useAgent('creative')"><span>🎨</span><b>Creative Partner</b><small>Brainstorm ideas, stories and concepts.</small></button>
+        </div>
+      </div>
+    </section>
+    <section id="page-plugins" class="page"><div class="panel"><h2>Tools & Plugins</h2><p>Useful workflow shortcuts inspired by open-source AI tool directories. These buttons prepare requests for EST AI; external APIs are not secretly enabled by this page.</p>
+      <div class="tool-grid">
+        <button class="tool-card" onclick="startWebSearch()"><span>🌐</span><b>Web search</b><small>Ask a current-information question. Results depend on backend support.</small></button>
+        <button class="tool-card" onclick="useWorkflow('summarize')"><span>🧾</span><b>Summarize</b><small>Condense text or notes pasted into chat.</small></button>
+        <button class="tool-card" onclick="useWorkflow('translate')"><span>🌍</span><b>Translate</b><small>Translate text and preserve its meaning.</small></button>
+        <button class="tool-card" onclick="useWorkflow('explain')"><span>💡</span><b>Explain simply</b><small>Break a difficult idea into easy steps.</small></button>
+        <button class="tool-card" onclick="useWorkflow('brainstorm')"><span>🧠</span><b>Brainstorm</b><small>Generate options, then compare trade-offs.</small></button>
+        <button class="tool-card" onclick="showPage('library');toast('Paste document text into chat for now; PDF upload/RAG needs backend integration.')"><span>📚</span><b>PDF / knowledge base</b><small>Document Q&A is a future backend integration.</small></button>
+      </div>
+      <p class="muted">Open WebUI and Lobe directories are used as design/workflow references, not embedded as whole applications. Plugin execution requires a real server-side integration.</p>
+    </div></section>
+    <section id="page-profile" class="page"><div class="panel profile-panel"><img class="profile-logo" src="assets/est-ai-logo.png"><h2>Profile</h2><span id="profileBadge" class="badge lite">✦ EST LITE</span><button onclick="showPage('settings')">⚙ Settings</button><button onclick="signOut()">Sign out</button></div></section>
+
+    <section id="page-settings" class="page">
+      <div class="panel"><h2>Settings</h2>
+        <div class="settings-list">
+          <label>Language <select><option>English</option><option>Hinglish</option><option>Hindi</option><option>Bengali</option></select></label>
+          <label>Appearance <select id="theme" onchange="setTheme(this.value)"><option value="dark">Dark mode</option><option value="light">Light mode</option><option value="winter">Winter mode</option></select></label>
+          <label>Spoken voice <select id="spokenVoice" onchange="setSpokenVoice(this.value)"><option value="female">Female voice (default)</option><option value="male">Male voice</option></select></label>
+          <small class="muted voice-note">Uses voices installed by your browser/device. This changes the spoken voice only; EST AI keeps its masculine Hindi/Hinglish persona.</small>
+          <button onclick="toast('Security controls are managed by Firebase account settings')">Account safety & security</button><button onclick="toast('Privacy controls are not yet connected')">Privacy</button><button onclick="toast('Notification registration is not connected in this frontend')">Notifications</button><button onclick="testVoiceSupport()">Voice & speech</button><button onclick="toast('Library upload and file management are not connected yet')">Data & Library</button><button onclick="signOut()">Sign out</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-plus" class="page">
+      <div class="plus-hero"><img src="assets/est-ai-logo.png"><h1>Est Ai Plans</h1><p>Choose a plan that fits your AI usage.</p></div>
+      <div class="plans">
+        <article class="plan lite-plan"><h2>EST Lite</h2><div class="price">10 ads <small>/ 7 days</small></div><ul><li>100+ conversations</li><li>+30 Library storage</li><li>10 images/day</li><li>Fast chatting</li><li>More hashtags</li></ul><button onclick="startAds(10,'lite')">Start Lite</button></article>
+        <article class="plan pro-plan"><h2>EST Pro</h2><div class="price">20 ads <small>/ 7 days</small></div><ul><li>200+ conversations</li><li>+60 Library storage</li><li>20 images/day</li><li>Fast chatting</li><li>Secret chatting</li></ul><button onclick="startAds(20,'pro')">Start Pro</button></article>
+        <article class="plan plus-plan"><h2>EST Plus</h2><div class="price">50 ads <small>/ 7 days</small></div><ul><li>500 conversations</li><li>+200 Library storage</li><li>50 images/day</li><li>Premium features</li><li>Advanced tools</li></ul><button onclick="startAds(50,'plus')">Start Plus</button></article>
+        <article class="plan special-plan"><span class="limited">LIMITED TIME OFFER</span><h2>EST Special</h2><div class="price">200 ads</div><ul><li>Approx. 2× Plus features</li><li>Extra special features</li><li>Rotates every 30 days</li><li>Special access</li><li>Limited-time benefits</li></ul><button onclick="startAds(200,'special')">Start Special</button></article>
+      </div>
+      <div class="duration"><button onclick="toast('Plan billing is a prototype; no purchase was made')">7 Days</button><button onclick="toast('Plan billing is a prototype; no purchase was made')">30 Days</button></div><p class="muted" style="text-align:center">Plan selection and ad countdown are UI prototypes only; they do not activate paid features or verify subscriptions.</p>
+    </section>
+
+    <section id="page-watch" class="page"><div class="panel"><h2>Watch an Ad</h2><p>Ads appear only here after you choose to watch one.</p><button class="primary" onclick="openAd()">▶ Watch an Ad</button><p class="muted">Daily ad limit: 20</p></div></section>
+  </main>
+</div>
+
+<div id="adOverlay" class="ad-overlay">
+  <div class="ad-card">
+    <div class="ad-head"><div><b>Advertisement</b><small>Watch until the timer completes</small></div><div class="ad-controls"><span id="timer">10</span><button id="adClose" disabled onclick="closeAd()">×</button></div></div>
+    <div class="ad-title">Native banner</div>
+    <div class="native-slot"><div id="container-c31f2558dc285fe9d1c1f04566221f47"></div></div>
+    <div class="ad-title">Banner ads</div><div id="bannerSlots"></div>
+    <div class="ad-note">Est Ai • Watch Ads</div>
+  </div>
+</div>
+<div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

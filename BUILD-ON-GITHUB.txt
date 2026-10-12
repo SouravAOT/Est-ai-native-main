@@ -1,0 +1,5 @@
+1) Extract this ZIP.
+2) Upload the extracted contents (including hidden .github folder) to a new GitHub repo.
+3) Commit to main.
+4) Open Actions -> Build EST AI Android APK.
+5) Download the EST-AI-debug-APK artifact after the run completes.
